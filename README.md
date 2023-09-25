@@ -44,7 +44,7 @@ Once the dm-verity device has been mounted, next step is to make the upper layer
 `sudo mount -t ramfs ramfs /ram-dir`
 
 * Now we have both the layers ready and now we can execute the **overlay fs** command.
-* In the mount point where we mounted ramfs we need to create two directories, one upper and work which we will use in the mount overlay command.
+* In the mount point where we mounted ramfs we need to create two directories, one upper and work which we will use in the mount overlay      command.
   `mount -t overlay overlay -o lowerdir=mnt/dm verity,upperdir=mnt/ramfs_dir/upper,workdir=mnt/ramfs_dir/work mnt/merged`
 
 
