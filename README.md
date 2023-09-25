@@ -27,24 +27,28 @@ Choose the file system type that you want to assign to your partition, for examp
 1. Issue the command `mkfs.ext4  /dev/sda1`.
 2. Issue the `blkid` command to list all known block storage devices and look for the newly created partition in the output.
 3. To create a mount point, exeucte command - `mkdir /mnt/mount_point_for_dev_sda1`.
-4. To mount the filesystem on the newly created mount point, run the command `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`.
+4. To mount the filesystem on the newly created mount point, run the command - `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`.
 5. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
 
 **CREATING AND MOUNTING THE DM-VERITY DEVICE**
 
 1. First step is to create a file path which stores the hash verification data of the non root device
+
    `veritysetup format <root device> <verity device> | grep Root | cut -f2 >> roothash.txt`
-2. Creates a mapping with <name> backed by device <data_device> and using <hash_device> for in-kernel verification.
+3. Creates a mapping with <name> backed by device <data_device> and using <hash_device> for in-kernel verification.
+   
    `veritysetup open <root device> <name><verity device> $(cat roothash.txt)`
-3. Now create a mount point and mount the verity device from **/dev/mapper/<name>**
+4. Now create a mount point and mount the verity device from **/dev/mapper/<name>**
 
 **MOUNTING RAMFS AND OVERLAYING BOTH THE LAYERS**
 
 Once the dm-verity device has been mounted, next step is to make the upper layer writable and to do that we use **ramfs** and mount that file system.
+
 `sudo mount -t ramfs ramfs /ram-dir`
 
 * Now we have both the layers ready and now we can execute the **overlay fs** command.
-* In the mount point where we mounted ramfs we need to create two directories, one upper and work which we will use in the mount overlay      command.
+* In the mount point where we mounted ramfs we need to create two directories, one upper and work which we will use in the mount overlay command.
+
   `mount -t overlay overlay -o lowerdir=mnt/dm verity,upperdir=mnt/ramfs_dir/upper,workdir=mnt/ramfs_dir/work mnt/merged`
 
 
