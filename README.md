@@ -6,6 +6,7 @@ We need to provide both read and write access for the root file system. I have m
 In order to implement overlay fs technique we first need to create a dm-verity partition and then mount it. For this the following steps are to be implemented -
 
 **RESIZING DISK PARTITION/ CREATING NEW PARTITIONS**
+
 1. Use `parted -l` to check the partitions available on the disk.
 2. Next enter gdisk to open the partition you want to reformat, ex. `gdisk /dev/sda15`
 3. An interface opens up in which you can query the disk to see the various configurations and memory related information. For example - Use `p` to check the size of each partition.
@@ -20,6 +21,7 @@ In order to implement overlay fs technique we first need to create a dm-verity p
 12. To verify that the Linux kernel can see the partition, use command `cat /proc/partitions`.
 
 **MOUNT FILE SYSTEM ON PARTITIONS**
+
 Choose the file system type that you want to assign to your partition, for example, I want the partition to be of ext4 type.
 
 1. Issue the command `mkfs.ext4  /dev/sda1`.
@@ -29,11 +31,24 @@ Choose the file system type that you want to assign to your partition, for examp
 5. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
 
 **CREATING AND MOUNTING THE DM-VERITY DEVICE**
+
 1. First step is to create a file path which stores the hash verification data of the non root device
    `veritysetup format <root device> <verity device> | grep Root | cut -f2 >> roothash.txt`
 2. Creates a mapping with <name> backed by device <data_device> and using <hash_device> for in-kernel verification.
-   `veritysetup open <root device> <name><verity device> $(cat roothash.txt)`   
-3.now create a mount point and mount the verity device from **/dev/mapper/<name>**
+   `veritysetup open <root device> <name><verity device> $(cat roothash.txt)`
+3. Now create a mount point and mount the verity device from **/dev/mapper/<name>**
+
+**MOUNTING RAMFS AND OVERLAYING BOTH THE LAYERS**
+
+Once the dm-verity device has been mounted, next step is to make the upper layer writable and to do that we use **ramfs** and mount that file system.
+`sudo mount -t ramfs ramfs /ram-dir`
+
+* Now we have both the layers ready and now we can execute the **overlay fs** command.
+* In the mount point where we mounted ramfs we need to create two directories, one upper and work which we will use in the mount overlay command.
+  `mount -t overlay overlay -o lowerdir=mnt/dm verity,upperdir=mnt/ramfs_dir/upper,workdir=mnt/ramfs_dir/work mnt/merged`
+
+
+
 
 
 
