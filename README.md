@@ -15,9 +15,9 @@ In order to implement overlay fs technique we first need to create a dm-verity p
 6. Enter the previous parition number and press enter for the start block size. Use the default start block available.
 7. Next enter the amount of memory you want to allocate to the newly created partition. Ex. +30G
 8. After this enter `p` to check if the parition has been properly and successfully been created.
-9. Then create the new partitionS using the above steps.
+9. Then create the new partitions using the above steps.
 10. Once everything looks good and you are ready to save the changes, use `w` to write the changes and to update the GPT table.
-11. After the GPT table has been updated, run `part probe` to inform the kernel about the newly created partitions.
+11. After the GPT table has been updated, run `partprobe` to inform the kernel about the newly created partitions.
 12. To verify that the Linux kernel can see the partition, use command `cat /proc/partitions`.
 
 **MOUNT FILE SYSTEM ON PARTITIONS**
