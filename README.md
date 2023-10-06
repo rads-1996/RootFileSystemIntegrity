@@ -8,7 +8,7 @@ In order to implement overlay fs technique we first need to create a dm-verity p
 **RESIZING DISK PARTITION/ CREATING NEW PARTITIONS**
 
 1. Use `parted -l` to check the partitions available on the disk.
-2. Next enter gdisk to open the partition you want to reformat, ex. `gdisk /dev/sda15`
+2. Next enter gdisk to open the partition you want to reformat, ex. `gdisk /dev/sda`
 3. An interface opens up in which you can query the disk to see the various configurations and memory related information. For example - Use `p` to check the size of each partition.
 4. Once the size of the partitions has been determined, we need to delete the root partition and then resize it to make room for creating new partitions for the purpose of overlaying    filesystems. To do that enter `d`. This will delete the current partition.
 5. Next use `n` to create a new partition.
