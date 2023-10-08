@@ -27,8 +27,12 @@ Choose the file system type that you want to assign to your partition, for examp
 1. Issue the command `mkfs.ext4  /dev/sda1`.
 2. Issue the `blkid` command to list all known block storage devices and look for the newly created partition in the output.
 3. To create a mount point, exeucte command - `mkdir /mnt/mount_point_for_dev_sda1`.
-4. To mount the filesystem on the newly created mount point, run the command - `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`.
-5. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
+4. To mount the filesystem on the newly created mount point, run the command -
+   
+   `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`
+
+
+6. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
 
 **CREATING AND MOUNTING THE DM-VERITY DEVICE**
 
