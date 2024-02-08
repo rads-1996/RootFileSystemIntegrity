@@ -26,8 +26,10 @@ Choose the file system type that you want to assign to your partition, for examp
 
 1. Issue the command `mkfs.ext4  /dev/sda1`.
 2. Issue the `blkid` command to list all known block storage devices and look for the newly created partition in the output.
-3. To create a mount point, exeucte command - `mkdir /mnt/mount_point_for_dev_sda1`.
-4. To mount the filesystem on the newly created mount point, run the command -
+
+   Dont mount it yet
+4. To create a mount point, exeucte command - `mkdir /mnt/mount_point_for_dev_sda1`.
+5. To mount the filesystem on the newly created mount point, run the command -
    
    `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`
 
@@ -36,13 +38,15 @@ Choose the file system type that you want to assign to your partition, for examp
 
 **CREATING AND MOUNTING THE DM-VERITY DEVICE**
 
-1. First step is to create a file path which stores the hash verification data of the non root device
+1. First step is to create a file path which stores the hash verification data of the non root device. The verity device can be a path and it will write the hash tree.
 
    `veritysetup format <root device> <verity device> | grep Root | cut -f2 >> roothash.txt`
 3. Creates a mapping with <name> backed by device <data_device> and using <hash_device> for in-kernel verification.
    
    `veritysetup open <root device> <name><verity device> $(cat roothash.txt)`
 4. Now create a mount point and mount the verity device from **/dev/mapper/<name>**
+
+   `mount /dev/mapper/non-root /mnt/dm-verity`
 
 **MOUNTING RAMFS AND OVERLAYING BOTH THE LAYERS**
 
