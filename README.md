@@ -60,6 +60,9 @@ Choose the file system type that you want to assign to your partition, for examp
 
    `mount -t overlay overlay -o lowerdir=mnt/dm verity,upperdir=mnt/ramfs_dir/upper,workdir=mnt/ramfs_dir/work mnt/merged`
 
+**INITRD**
+unmkinitramfs /boot/initrd.img-$(uname -r) initramfs/
+
 
 
 
