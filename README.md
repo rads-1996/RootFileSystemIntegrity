@@ -6,19 +6,17 @@ We need to provide both read and write access for the root file system. I have m
 In order to implement overlay fs technique we first need to create a dm-verity partition and then mount it. For this the following steps are to be implemented -
 
 **RESIZING DISK PARTITION/ CREATING NEW PARTITIONS**
-
-1. Use `parted -l` to check the partitions available on the disk.
-2. Next enter gdisk to open the partition you want to reformat, ex. `gdisk /dev/sda`
-3. An interface opens up in which you can query the disk to see the various configurations and memory related information. For example - Use `p` to check the size of each partition.
-4. Once the size of the partitions has been determined, we need to delete the root partition and then resize it to make room for creating new partitions for the purpose of overlaying    filesystems. To do that enter `d`. This will delete the current partition.
-5. Next use `n` to create a new partition.
-6. Enter the previous parition number and press enter for the start block size. Use the default start block available.
-7. Next enter the amount of memory you want to allocate to the newly created partition. Ex. +30G
-8. After this enter `p` to check if the parition has been properly and successfully been created.
-9. Then create the new partitions using the above steps.
-10. Once everything looks good and you are ready to save the changes, use `w` to write the changes and to update the GPT table.
-11. After the GPT table has been updated, run `partprobe` to inform the kernel about the newly created partitions.
-12. To verify that the Linux kernel can see the partition, use command `cat /proc/partitions`.
+1. Use a USB and connect it with the VM which runs the Ubuntu image.
+2. Install a bootloader image software such as "Balena Etcher" on the VM.
+3. Download the corresponding ISO image for the Live Ubuntu system.
+4. Using the on screen instruction in the Balena software, create a live bootable image.
+5. Reboot the main Ubuntu system and enter the grub menu and choose to boot from the live system.
+6. Install gparted on the live system if it doesn't already exist.
+7. Open gparted and choose the disk of the actual system.
+8. Since those partitions are no longer mounted we can make changes to it and resize the root partition.
+9. Once the resizing has been done, reboot to the original system and the changes should be visible now.
+10. Now new partitions can be created via the gdisk interface as well.
+11. To verify that the Linux kernel can see the partition, use command `cat /proc/partitions`.
 
 **MOUNT FILE SYSTEM ON PARTITIONS**
 
@@ -27,14 +25,7 @@ Choose the file system type that you want to assign to your partition, for examp
 1. Issue the command `mkfs.ext4  /dev/sda1`.
 2. Issue the `blkid` command to list all known block storage devices and look for the newly created partition in the output.
 
-   Dont mount it yet
-4. To create a mount point, exeucte command - `mkdir /mnt/mount_point_for_dev_sda1`.
-5. To mount the filesystem on the newly created mount point, run the command -
-   
-   `mount -t ext4 /dev/sda1  /mnt/mount_point_for_dev_sda1/`
-
-
-6. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
+3. Make use of the `df -h` command shows which filesystem is mounted on which mount point.
 
 **CREATING AND MOUNTING THE DM-VERITY DEVICE**
 
@@ -61,12 +52,6 @@ Choose the file system type that you want to assign to your partition, for examp
    `mount -t overlay overlay -o lowerdir=mnt/dm verity,upperdir=mnt/ramfs_dir/upper,workdir=mnt/ramfs_dir/work mnt/merged`
 
 **INITRD**
-unmkinitramfs /boot/initrd.img-$(uname -r) initramfs/
-
-
-
-
-
-
-
+1. In order to find the intercept points for inserting the scripts for verity setup and overlayfs mounting, contents of the initrd image are extracted using - **unmkinitramfs**            `unmkinitramfs /boot/initrd.img-$(uname -r) initramfs/`
+2. This command will extract the contents of the image and contains an init script which is the driver script responsible for setting up the device and finally mounting the root file system.
 
